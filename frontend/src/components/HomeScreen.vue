@@ -95,18 +95,30 @@
       <button class="btn btn-primary" @click="openNewRecord">+ 新規記録</button>
       <button class="btn btn-secondary">📊 統計</button>
     </footer>
+
+    <!-- 新規記録フォーム（モーダル） -->
+    <NewRecordForm 
+      :isOpen="isNewRecordFormOpen"
+      @close="closeNewRecordForm"
+      @submit="onRecordSubmit"
+    />
   </div>
 </template>
 
 <script>
 import { ref, computed, onMounted } from 'vue'
 import { getAllMaintenanceRecords, getUserSettings } from '../db'
+import NewRecordForm from './NewRecordForm.vue'
 
 export default {
   name: 'HomeScreen',
+  components: {
+    NewRecordForm
+  },
   setup() {
     const records = ref([])
     const settings = ref(null)
+    const isNewRecordFormOpen = ref(false)
 
     // 最近の記録（最新 5 件）
     const recentRecords = computed(() => records.value.slice(0, 5))
@@ -214,7 +226,19 @@ export default {
 
     // 新規記録を開く
     const openNewRecord = () => {
-      alert('新規記録フォームを開く（後で実装）')
+      isNewRecordFormOpen.value = true
+    }
+
+    // フォームを閉じる
+    const closeNewRecordForm = () => {
+      isNewRecordFormOpen.value = false
+    }
+
+    // 記録が提出されたときの処理
+    const onRecordSubmit = async (record) => {
+      console.log('[HomeScreen] 新規記録が保存されました:', record)
+      // レコードをリロード
+      records.value = await getAllMaintenanceRecords()
     }
 
     // マウント時：データ読み込み
@@ -226,6 +250,7 @@ export default {
     return {
       records,
       settings,
+      isNewRecordFormOpen,
       recentRecords,
       upcomingMaintenance,
       monthlyExpense,
@@ -235,7 +260,9 @@ export default {
       formatAmount,
       getIcon,
       getTypeName,
-      openNewRecord
+      openNewRecord,
+      closeNewRecordForm,
+      onRecordSubmit
     }
   }
 }

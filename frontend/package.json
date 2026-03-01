@@ -1,7 +1,7 @@
 {
-  "name": "frontend",
+  "name": "kuruma-log-frontend",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "dexie": "^4.3.0",
-    "vue": "^3.5.25"
+    "vue": "^3.5.29"
   },
   "devDependencies": {
     "@vitejs/plugin-vue": "^6.0.4",
