@@ -49,7 +49,7 @@
       <section class="recent-section">
         <div class="section-header">
           <h2 class="section-title">📝 最近の記録</h2>
-          <a href="#" class="view-all">一覧表示</a>
+          <button class="view-all" @click="$emit('open-list')">一覧表示</button>
         </div>
 
         <div class="recent-list">
@@ -93,7 +93,7 @@
     <!-- フローティング操作パネル -->
     <footer class="footer">
       <button class="btn btn-primary" @click="openNewRecord">+ 新規記録</button>
-      <button class="btn btn-secondary">📊 統計</button>
+      <button class="btn btn-secondary" @click="$emit('open-list')">📊 一覧</button>
     </footer>
 
     <!-- 新規記録フォーム（モーダル） -->
@@ -115,6 +115,7 @@ export default {
   components: {
     NewRecordForm
   },
+  emits: ['open-list'],
   setup() {
     const records = ref([])
     const settings = ref(null)
@@ -325,6 +326,10 @@ export default {
   text-decoration: none;
   font-weight: 500;
   transition: color 0.2s;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0;
 }
 
 .view-all:hover {
@@ -521,7 +526,7 @@ export default {
   background: white;
   box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.08);
   position: sticky;
-  bottom: 0;
+  bottom: 60px;
 }
 
 .btn {
