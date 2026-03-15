@@ -35,7 +35,10 @@
             <div v-if="record.amount" class="info">金額: {{ formatCurrency(record.amount) }}</div>
             <div v-if="record.memo" class="info memo">{{ record.memo }}</div>
           </div>
-          <button @click="editRecord(record.id)" class="btn-edit">編集</button>
+          <div class="item-actions">
+            <button @click="editRecord(record.id)" class="btn-edit">編集</button>
+            <button @click="deleteRecord(record.id)" class="btn-delete">削除</button>
+          </div>
         </div>
       </div>
     </div>
@@ -153,6 +156,16 @@ export default {
       this.selectedRecord = record
       this.selectedRecordType = record.type
       this.showRecordPanel = true
+    },
+    async deleteRecord(id) {
+      const record = await maintenanceStore.getById(id)
+      if (!record) return
+
+      const confirmed = window.confirm(`${this.getLabel(record.type)}の記録を削除します。よろしいですか？`)
+      if (!confirmed) return
+
+      await maintenanceStore.delete(id)
+      await this.loadRecords()
     },
     selectRecord(type) {
       this.selectedRecord = null
