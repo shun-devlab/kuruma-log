@@ -48,7 +48,10 @@
       <div class="expense-summary">
         <span>{{ currentMonth }}: {{ formatCurrency(monthlyExpense) }}</span>
       </div>
-      <button @click="openStats" class="btn-link">📊 詳細を見る</button>
+      <div class="quick-links">
+        <button @click="openStats" class="btn-link">📊 詳細を見る</button>
+        <button @click="openHistory" class="btn-link">📚 記録一覧を見る</button>
+      </div>
     </div>
 
     <div class="record-buttons">
@@ -80,7 +83,7 @@ export default {
   components: {
     RecordPanel
   },
-  emits: ['open-stats'],
+  emits: ['open-stats', 'open-history'],
   data() {
     return {
       records: [],
@@ -182,6 +185,9 @@ export default {
     },
     openStats() {
       this.$emit('open-stats')
+    },
+    openHistory() {
+      this.$emit('open-history')
     },
     updateUpcomingMaintenance() {
       this.upcomingMaintenance = calculateNextMaintenance(this.records, this.currentMileage, this.settings)
@@ -396,6 +402,12 @@ export default {
   font-weight: bold;
 }
 
+.quick-links {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
 .btn-link {
   background: none;
   border: none;
@@ -403,6 +415,11 @@ export default {
   font-size: 14px;
   cursor: pointer;
   text-decoration: underline;
+  font-weight: 600;
+}
+
+.btn-link:hover {
+  color: #ff9500;
 }
 
 .record-buttons {

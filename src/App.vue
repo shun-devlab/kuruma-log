@@ -3,11 +3,17 @@
     <Home
       v-if="currentPage === 'home'"
       @open-stats="showStatistics"
+      @open-history="showHistory"
     />
     <StatisticsScreen
-      v-else
+      v-else-if="currentPage === 'statistics'"
       :records="statsPayload.records"
       :settings="statsPayload.settings"
+      @back="currentPage = 'home'"
+    />
+    <HistoryScreen
+      v-else
+      :records="historyRecords"
       @back="currentPage = 'home'"
     />
   </div>
@@ -16,12 +22,14 @@
 <script>
 import Home from './views/Home.vue'
 import StatisticsScreen from './views/StatisticsScreen.vue'
+import HistoryScreen from './views/HistoryScreen.vue'
 import { maintenanceStore } from './stores/db'
 
 export default {
   components: {
     Home,
-    StatisticsScreen
+    StatisticsScreen,
+    HistoryScreen
   },
   data() {
     return {
@@ -29,13 +37,18 @@ export default {
       statsPayload: {
         records: [],
         settings: {}
-      }
+      },
+      historyRecords: []
     }
   },
   methods: {
     async showStatistics() {
       this.statsPayload = await maintenanceStore.getDashboardData()
       this.currentPage = 'statistics'
+    },
+    async showHistory() {
+      this.historyRecords = await maintenanceStore.getAll()
+      this.currentPage = 'history'
     }
   }
 }
