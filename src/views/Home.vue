@@ -61,8 +61,9 @@
       :record-type="selectedRecordType"
       :settings="settings"
       :suggested-mileage="suggestedMileage"
-      @save="addRecord"
-      @close="showRecordPanel = false"
+      :initial-record="selectedRecord"
+      @save="saveRecord"
+      @close="closeRecordPanel"
     />
   </div>
 </template>
@@ -83,6 +84,7 @@ export default {
       settings: {},
       showRecordPanel: false,
       selectedRecordType: null,
+      selectedRecord: null,
       upcomingMaintenance: [],
       currentMileage: 0
     }
@@ -127,14 +129,40 @@ export default {
       await settingsStore.save(this.settings)
       this.currentMileage = Number(this.settings.current_mileage) || this.currentMileage
       await this.loadRecords()
-      this.showRecordPanel = false
+      this.closeRecordPanel()
     },
-    editRecord(id) {
-      console.log('Edit record:', id)
+    async saveRecord(recordData) {
+      if (this.selectedRecord && this.selectedRecord.id) {
+        await maintenanceStore.update(this.selectedRecord.id, recordData)
+      } else {
+        await maintenanceStore.add(recordData)
+      }
+
+      if (recordData.mileage) {
+        this.settings.current_mileage = recordData.mileage
+        await settingsStore.save(this.settings)
+        this.currentMileage = Number(this.settings.current_mileage) || this.currentMileage
+      }
+
+      await this.loadRecords()
+      this.closeRecordPanel()
+    },
+    async editRecord(id) {
+      const record = await maintenanceStore.getById(id)
+      if (!record) return
+      this.selectedRecord = record
+      this.selectedRecordType = record.type
+      this.showRecordPanel = true
     },
     selectRecord(type) {
+      this.selectedRecord = null
       this.selectedRecordType = type
       this.showRecordPanel = true
+    },
+    closeRecordPanel() {
+      this.showRecordPanel = false
+      this.selectedRecord = null
+      this.selectedRecordType = null
     },
     openSettings() {
       console.log('Open settings')

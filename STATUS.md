@@ -1,9 +1,9 @@
 # クルマログ STATUS
 
-最終更新: 2026-03-15 18:39 JST
+最終更新: 2026-03-15 22:38 JST
 
 ## 現在の状態
-- current_task: Task 1.5 候補整理 / 次タスク確定
+- current_task: Task 1.5.4 削除導線と削除確認
 - state: in_progress
 - owner_decision_waiting: false
 - report_channel: discord#kuruma-log_log (1477663886223343830)
@@ -11,20 +11,20 @@
 - last_progress_report_at: 2026-03-15 13:27 JST
 
 ## 直近でやったこと
-- リポジトリ履歴をクリーン化
-- main ブランチをクリーンな基準として再構成
-- BACKLOG に実行ルール / blocked 運用 / 外部アクセス方針を追記
-- 進捗ログ送信先を `kuruma-log_log` に固定
+- Task 1.5.1 編集ボタンから `RecordPanel` が開くように実装
+- Task 1.5.2 編集時に既存レコードをフォームへ事前入力するように実装
+- Task 1.5.3 保存時に新規追加ではなく update される基本フローを実装
+- `npm install --include=dev` を実行し、`npm run build` 成功を確認
 
 ## 次にやること
-1. 現在の実装がどこまで動くか確認
-2. backlog の現在地を更新
-3. 次タスク（Task 1.5）を確定して着手
+1. Task 1.5.4 削除導線と削除確認の実装
+2. Task 1.5 完了として tracker / backlog を更新
+3. commit / push / 進捗報告
 
 ## 課題 / blockers
 - GitHub Actions / Pages 用 workflow は一時的に repo から外している
 - 自動デプロイ復旧には workflow の再追加が必要
-- 実装そのものより整備作業が先行していたため、開発進捗が鈍っている
+- 削除導線はまだ未実装
 
 ## 運用ルール
 - タスク完了条件には「進捗報告」を含める

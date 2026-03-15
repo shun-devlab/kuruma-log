@@ -2,7 +2,7 @@
   <div class="modal-overlay" @click.self="$emit('close')">
     <div class="modal-content">
       <div class="modal-header">
-        <h3>{{ getLabel(recordType) }}</h3>
+        <h3>{{ panelTitle }}</h3>
         <button @click="$emit('close')" class="btn-close">✕</button>
       </div>
 
@@ -40,7 +40,7 @@
 
         <!-- ボタン -->
         <div class="form-actions">
-          <button type="submit" class="btn-primary">保存</button>
+          <button type="submit" class="btn-primary">{{ initialRecord ? '更新' : '保存' }}</button>
           <button type="button" @click="$emit('close')" class="btn-secondary">キャンセル</button>
         </div>
       </form>
@@ -62,6 +62,10 @@ export default {
     suggestedMileage: {
       type: Number,
       required: true
+    },
+    initialRecord: {
+      type: Object,
+      default: null
     }
   },
   emits: ['save', 'close'],
@@ -76,9 +80,25 @@ export default {
       }
     }
   },
+  computed: {
+    panelTitle() {
+      return this.initialRecord ? `${this.getLabel(this.recordType)}を編集` : this.getLabel(this.recordType)
+    }
+  },
+  mounted() {
+    if (this.initialRecord) {
+      this.form = {
+        type: this.initialRecord.type,
+        date: this.initialRecord.date || this.getTodayDate(),
+        mileage: this.initialRecord.mileage ?? this.suggestedMileage,
+        amount: this.initialRecord.amount ?? null,
+        memo: this.initialRecord.memo ?? ''
+      }
+    }
+  },
   methods: {
     submit() {
-      this.$emit('save', this.form)
+      this.$emit('save', { ...this.form, type: this.recordType })
     },
     getTodayDate() {
       const date = new Date()
