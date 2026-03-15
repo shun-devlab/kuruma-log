@@ -2,6 +2,8 @@
   <div id="app" class="app">
     <Home
       v-if="currentPage === 'home'"
+      :initial-edit-record="pendingEditRecord"
+      @consume-initial-edit="pendingEditRecord = null"
       @open-stats="showStatistics"
       @open-history="showHistory"
     />
@@ -15,6 +17,7 @@
       v-else
       :records="historyRecords"
       @back="currentPage = 'home'"
+      @edit-record="openHistoryRecordEditor"
     />
   </div>
 </template>
@@ -38,7 +41,8 @@ export default {
         records: [],
         settings: {}
       },
-      historyRecords: []
+      historyRecords: [],
+      pendingEditRecord: null
     }
   },
   methods: {
@@ -49,6 +53,10 @@ export default {
     async showHistory() {
       this.historyRecords = await maintenanceStore.getAll()
       this.currentPage = 'history'
+    },
+    openHistoryRecordEditor(record) {
+      this.pendingEditRecord = record
+      this.currentPage = 'home'
     }
   }
 }

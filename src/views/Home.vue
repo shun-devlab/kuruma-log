@@ -83,7 +83,13 @@ export default {
   components: {
     RecordPanel
   },
-  emits: ['open-stats', 'open-history'],
+  props: {
+    initialEditRecord: {
+      type: Object,
+      default: null
+    }
+  },
+  emits: ['open-stats', 'open-history', 'consume-initial-edit'],
   data() {
     return {
       records: [],
@@ -118,6 +124,18 @@ export default {
     },
     suggestedMileage() {
       return suggestMileage(this.records, this.currentMileage)
+    }
+  },
+  watch: {
+    initialEditRecord: {
+      immediate: true,
+      handler(record) {
+        if (!record) return
+        this.selectedRecord = record
+        this.selectedRecordType = record.type
+        this.showRecordPanel = true
+        this.$emit('consume-initial-edit')
+      }
     }
   },
   methods: {

@@ -97,7 +97,10 @@
             <h2>詳細</h2>
             <p>{{ getLabel(selectedRecord.type) }}</p>
           </div>
-          <button class="btn-close" @click="selectedRecord = null">閉じる</button>
+          <div class="detail-actions">
+            <button class="btn-edit-detail" @click="$emit('edit-record', selectedRecord)">編集する</button>
+            <button class="btn-close" @click="selectedRecord = null">閉じる</button>
+          </div>
         </div>
 
         <dl class="detail-grid">
@@ -143,7 +146,7 @@ export default {
       default: () => []
     }
   },
-  emits: ['back'],
+  emits: ['back', 'edit-record'],
   data() {
     return {
       searchQuery: '',
@@ -380,6 +383,31 @@ select {
   gap: 12px;
   align-items: center;
   margin-bottom: 12px;
+}
+
+.detail-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.btn-edit-detail {
+  border: none;
+  background: #ff9500;
+  color: #ffffff;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.btn-edit-detail:hover {
+  background: #e68600;
+}
+
+.btn-back:hover,
+.btn-close:hover {
+  background: #e8e8e8;
 }
 
 .detail-grid {
