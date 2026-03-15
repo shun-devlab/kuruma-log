@@ -18,6 +18,7 @@
       :records="historyRecords"
       @back="currentPage = 'home'"
       @edit-record="openHistoryRecordEditor"
+      @delete-record="deleteHistoryRecord"
     />
   </div>
 </template>
@@ -57,6 +58,11 @@ export default {
     openHistoryRecordEditor(record) {
       this.pendingEditRecord = record
       this.currentPage = 'home'
+    },
+    async deleteHistoryRecord(record) {
+      if (!record?.id) return
+      await maintenanceStore.delete(record.id)
+      this.historyRecords = await maintenanceStore.getAll()
     }
   }
 }

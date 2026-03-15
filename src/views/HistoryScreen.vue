@@ -99,6 +99,7 @@
           </div>
           <div class="detail-actions">
             <button class="btn-edit-detail" @click="$emit('edit-record', selectedRecord)">編集する</button>
+            <button class="btn-delete-detail" @click="requestDelete(selectedRecord)">削除する</button>
             <button class="btn-close" @click="selectedRecord = null">閉じる</button>
           </div>
         </div>
@@ -146,7 +147,7 @@ export default {
       default: () => []
     }
   },
-  emits: ['back', 'edit-record'],
+  emits: ['back', 'edit-record', 'delete-record'],
   data() {
     return {
       searchQuery: '',
@@ -227,6 +228,12 @@ export default {
     },
     formatCurrency(value) {
       return `¥${Math.round(Number(value) || 0).toLocaleString('ja-JP')}`
+    },
+    requestDelete(record) {
+      if (!record) return
+      const confirmed = window.confirm(`${this.getLabel(record.type)}の記録を削除します。よろしいですか？`)
+      if (!confirmed) return
+      this.$emit('delete-record', record)
     }
   }
 }
@@ -401,8 +408,22 @@ select {
   font-weight: 600;
 }
 
+.btn-delete-detail {
+  border: 1px solid #f5c2c0;
+  background: #fdecec;
+  color: #e74c3c;
+  border-radius: 10px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
 .btn-edit-detail:hover {
   background: #e68600;
+}
+
+.btn-delete-detail:hover {
+  background: #fadbd8;
 }
 
 .btn-back:hover,
@@ -447,6 +468,14 @@ select {
   .summary-strip,
   .detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .detail-actions {
+    width: 100%;
+  }
+
+  .detail-actions button {
+    flex: 1;
   }
 }
 </style>
