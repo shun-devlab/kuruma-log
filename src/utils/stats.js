@@ -1,12 +1,5 @@
 import { calculateNextMaintenance } from './nextMaintenance'
-
-const TYPE_META = {
-  gasoline: { label: 'ガソリン', icon: '⛽' },
-  oil: { label: 'オイル交換', icon: '🛢️' },
-  tire: { label: 'タイヤ交換', icon: '🛞' },
-  wash: { label: '洗車', icon: '🚿' },
-  repair: { label: '修理', icon: '⚠️' }
-}
+import { getRecordMeta } from './recordMeta'
 
 function toDate(value) {
   return new Date(`${value}T00:00:00`)
@@ -31,7 +24,8 @@ function average(values) {
 }
 
 export function getTypeMeta(type) {
-  return TYPE_META[type] || { label: 'その他', icon: '📝' }
+  const meta = getRecordMeta(type)
+  return { label: meta.fullLabel, icon: meta.icon }
 }
 
 export function buildStatistics(records = [], settings = {}) {

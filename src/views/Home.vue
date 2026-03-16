@@ -55,11 +55,14 @@
     </div>
 
     <div class="record-buttons">
-      <button @click="selectRecord('gasoline')" class="btn-record">⛽<br>ガソリン</button>
-      <button @click="selectRecord('oil')" class="btn-record">🛢️<br>オイル</button>
-      <button @click="selectRecord('tire')" class="btn-record">🛞<br>タイヤ</button>
-      <button @click="selectRecord('wash')" class="btn-record">🚿<br>洗車</button>
-      <button @click="selectRecord('repair')" class="btn-record">⚠️<br>修理</button>
+      <button
+        v-for="recordType in recordTypes"
+        :key="recordType.value"
+        @click="selectRecord(recordType.value)"
+        class="btn-record"
+      >
+        {{ recordType.icon }}<br>{{ recordType.label }}
+      </button>
     </div>
 
     <RecordPanel
@@ -77,6 +80,7 @@
 <script>
 import { maintenanceStore, settingsStore, initDatabase } from '../stores/db'
 import { calculateNextMaintenance, suggestMileage } from '../utils/nextMaintenance'
+import { RECORD_TYPES, getRecordMeta } from '../utils/recordMeta'
 import RecordPanel from '../components/RecordPanel.vue'
 
 export default {
@@ -124,6 +128,9 @@ export default {
     },
     suggestedMileage() {
       return suggestMileage(this.records, this.currentMileage)
+    },
+    recordTypes() {
+      return RECORD_TYPES
     }
   },
   watch: {
@@ -211,22 +218,10 @@ export default {
       this.upcomingMaintenance = calculateNextMaintenance(this.records, this.currentMileage, this.settings)
     },
     getIcon(type) {
-      return {
-        gasoline: '⛽',
-        oil: '🛢️',
-        tire: '🛞',
-        wash: '🚿',
-        repair: '⚠️'
-      }[type] || '📝'
+      return getRecordMeta(type).icon
     },
     getLabel(type) {
-      return {
-        gasoline: 'ガソリン給油',
-        oil: 'オイル交換',
-        tire: 'タイヤ交換',
-        wash: '洗車',
-        repair: '故障・修理'
-      }[type] || 'その他'
+      return getRecordMeta(type).fullLabel
     },
     formatDate(dateString) {
       const date = new Date(`${dateString}T00:00:00`)
@@ -441,8 +436,8 @@ export default {
 }
 
 .record-buttons {
-  display: flex;
-  justify-content: space-around;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   background: #f5f5f5;
   padding: 16px;
   gap: 8px;
@@ -452,22 +447,34 @@ export default {
 }
 
 .btn-record {
-  flex: 1;
   background: #ffffff;
   border: 1px solid #dddddd;
   border-radius: 8px;
-  padding: 12px;
+  padding: 12px 8px;
   font-size: 12px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   transition: all 0.2s;
+  min-height: 72px;
 }
 
 .btn-record:hover {
   background: #f5f5f5;
   border-color: #ff9500;
+}
+
+@media (max-width: 480px) {
+  .record-buttons {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 12px 8px;
+  }
+
+  .btn-record {
+    min-height: 68px;
+  }
 }
 </style>

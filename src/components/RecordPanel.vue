@@ -13,15 +13,15 @@
           <input v-model="form.date" type="date" required>
         </div>
 
-        <!-- 走行距離（ガソリン・オイル必須） -->
-        <div v-if="['gasoline', 'oil'].includes(recordType)" class="form-group">
+        <!-- 走行距離（主要メンテは必須） -->
+        <div v-if="['gasoline', 'oil', 'inspection', 'battery'].includes(recordType)" class="form-group">
           <label>走行距離 *</label>
           <input v-model.number="form.mileage" type="number" placeholder="km" required>
           <small>現在の値: {{ suggestedMileage }}km</small>
         </div>
 
         <!-- 走行距離（その他オプション） -->
-        <div v-else-if="['tire', 'repair'].includes(recordType)" class="form-group">
+        <div v-else-if="['tire', 'repair', 'wash', 'glass', 'lamp', 'supplies', 'parking', 'insurance', 'other'].includes(recordType)" class="form-group">
           <label>走行距離（オプション）</label>
           <input v-model.number="form.mileage" type="number" placeholder="km">
         </div>
@@ -49,6 +49,8 @@
 </template>
 
 <script>
+import { getRecordMeta } from '../utils/recordMeta'
+
 export default {
   props: {
     recordType: {
@@ -105,14 +107,8 @@ export default {
       return date.toISOString().split('T')[0]
     },
     getLabel(type) {
-      const labels = {
-        gasoline: '⛽ ガソリン給油',
-        oil: '🛢️ オイル交換',
-        tire: '🛞 タイヤ交換',
-        wash: '🚿 洗車',
-        repair: '⚠️ 故障・修理'
-      }
-      return labels[type] || '記録'
+      const meta = getRecordMeta(type)
+      return `${meta.icon} ${meta.fullLabel}`
     }
   }
 }

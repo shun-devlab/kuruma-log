@@ -132,13 +132,7 @@
 </template>
 
 <script>
-const TYPE_OPTIONS = [
-  { value: 'gasoline', label: 'ガソリン給油' },
-  { value: 'oil', label: 'オイル交換' },
-  { value: 'tire', label: 'タイヤ交換' },
-  { value: 'wash', label: '洗車' },
-  { value: 'repair', label: '故障・修理' }
-]
+import { RECORD_TYPES, getRecordMeta } from '../utils/recordMeta'
 
 export default {
   props: {
@@ -159,7 +153,7 @@ export default {
   },
   computed: {
     typeOptions() {
-      return TYPE_OPTIONS
+      return RECORD_TYPES.map((item) => ({ value: item.value, label: item.fullLabel }))
     },
     monthOptions() {
       return [...new Set(this.records.map((record) => `${record.date.slice(0, 7)}`))].sort().reverse()
@@ -205,22 +199,10 @@ export default {
   },
   methods: {
     getIcon(type) {
-      return {
-        gasoline: '⛽',
-        oil: '🛢️',
-        tire: '🛞',
-        wash: '🚿',
-        repair: '⚠️'
-      }[type] || '📝'
+      return getRecordMeta(type).icon
     },
     getLabel(type) {
-      return {
-        gasoline: 'ガソリン給油',
-        oil: 'オイル交換',
-        tire: 'タイヤ交換',
-        wash: '洗車',
-        repair: '故障・修理'
-      }[type] || 'その他'
+      return getRecordMeta(type).fullLabel
     },
     formatDate(dateString) {
       const date = new Date(`${dateString}T00:00:00`)
