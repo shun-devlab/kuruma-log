@@ -1,5 +1,6 @@
 export const RECORD_TYPES = [
   { value: 'gasoline', label: 'ガソリン', fullLabel: 'ガソリン', icon: '⛽', group: 'primary' },
+  { value: 'odometer', label: '総走行距離', fullLabel: '総走行距離更新', icon: '🛣️', group: 'primary' },
   { value: 'wash', label: '洗車', fullLabel: '洗車', icon: '🚗', group: 'primary' },
   { value: 'oil', label: 'エンジンオイル', fullLabel: 'エンジンオイル', icon: '🔧', group: 'primary' },
   { value: 'tire', label: 'タイヤ', fullLabel: 'タイヤ', icon: '🔄', group: 'primary' },

@@ -193,7 +193,7 @@ export default {
         await maintenanceStore.add(recordData)
       }
 
-      if (recordData.mileage) {
+      if (recordData.mileage && ['gasoline', 'odometer'].includes(recordData.type)) {
         this.settings.current_mileage = recordData.mileage
         await settingsStore.save(this.settings)
         this.currentMileage = Number(this.settings.current_mileage) || this.currentMileage

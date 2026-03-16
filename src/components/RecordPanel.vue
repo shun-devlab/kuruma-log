@@ -13,18 +13,13 @@
           <input v-model="form.date" type="date" required>
         </div>
 
-        <!-- 走行距離（主要メンテは必須） -->
-        <div v-if="['gasoline', 'oil', 'inspection', 'battery'].includes(recordType)" class="form-group">
+        <!-- 走行距離（ガソリン / 総走行距離更新のみ必須） -->
+        <div v-if="['gasoline', 'odometer'].includes(recordType)" class="form-group">
           <label>走行距離 *</label>
           <input v-model.number="form.mileage" type="number" placeholder="km" required>
           <small>現在の値: {{ suggestedMileage }}km</small>
         </div>
 
-        <!-- 走行距離（その他オプション） -->
-        <div v-else-if="['tire', 'repair', 'wash', 'glass', 'lamp', 'supplies', 'parking', 'insurance', 'other', 'oil_filter', 'ac_filter', 'wiper_rubber'].includes(recordType)" class="form-group">
-          <label>走行距離（オプション）</label>
-          <input v-model.number="form.mileage" type="number" placeholder="km">
-        </div>
 
         <!-- 金額（オプション） -->
         <div class="form-group">
