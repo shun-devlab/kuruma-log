@@ -5,8 +5,6 @@
       :key="`home-${homeRefreshKey}`"
       :initial-edit-record="pendingEditRecord"
       @consume-initial-edit="pendingEditRecord = null"
-      @open-stats="showStatistics"
-      @open-history="showHistory"
       @open-settings="showSettings"
     />
     <StatisticsScreen
@@ -28,6 +26,12 @@
       @back="currentPage = 'home'"
       @saved="refreshHomeAfterSettings"
     />
+
+    <nav v-if="currentPage !== 'settings'" class="bottom-tabs">
+      <button class="tab-btn" :class="{ active: currentPage === 'home' }" @click="currentPage = 'home'">📝<span>記録</span></button>
+      <button class="tab-btn" :class="{ active: currentPage === 'statistics' }" @click="showStatistics">📊<span>まとめ</span></button>
+      <button class="tab-btn" :class="{ active: currentPage === 'history' }" @click="showHistory">📚<span>一覧</span></button>
+    </nav>
   </div>
 </template>
 
@@ -117,5 +121,37 @@ textarea {
   margin: 0 auto;
   background: #ffffff;
   min-height: 100vh;
+  padding-bottom: 88px;
+}
+
+.bottom-tabs {
+  position: sticky;
+  bottom: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  background: rgba(255, 255, 255, 0.96);
+  border-top: 1px solid #e5e5e5;
+  backdrop-filter: blur(8px);
+}
+
+.tab-btn {
+  border: none;
+  background: none;
+  padding: 10px 8px 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  color: #777777;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.tab-btn span {
+  font-size: 12px;
+}
+
+.tab-btn.active {
+  color: #ff9500;
 }
 </style>

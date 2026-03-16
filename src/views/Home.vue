@@ -65,16 +65,6 @@
       </div>
     </div>
 
-    <div class="monthly-expense">
-      <h2>【月別支出】</h2>
-      <div class="expense-summary">
-        <span>{{ currentMonth }}: {{ formatCurrency(monthlyExpense) }}</span>
-      </div>
-      <div class="quick-links">
-        <button @click="openStats" class="btn-link">📊 詳細を見る</button>
-        <button @click="openHistory" class="btn-link">📚 記録一覧を見る</button>
-      </div>
-    </div>
 
     <div class="record-panel-section">
       <div class="record-strip-label">記録カテゴリ</div>
