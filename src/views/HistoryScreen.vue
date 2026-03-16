@@ -445,11 +445,40 @@ select {
   padding: 24px 0;
 }
 
+@media (max-width: 768px) {
+  .header {
+    padding: 12px;
+  }
+
+  .content {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .filter-panel,
+  .list-panel,
+  .detail-panel,
+  .summary-strip {
+    padding: 14px;
+  }
+
+  .record-top {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+  }
+}
+
 @media (max-width: 640px) {
   .filter-row,
   .summary-strip,
   .detail-grid {
     grid-template-columns: 1fr;
+  }
+
+  .detail-header {
+    align-items: flex-start;
+    flex-direction: column;
   }
 
   .detail-actions {

@@ -306,6 +306,21 @@ input {
   color: #ff9500;
   font-weight: 600;
 }
+@media (max-width: 768px) {
+  .header {
+    padding: 12px;
+  }
+
+  .content {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .panel {
+    padding: 14px;
+  }
+}
+
 @media (max-width: 640px) {
   .form-grid,
   .preview-grid {

@@ -541,6 +541,35 @@ export default {
   padding: 24px 12px;
 }
 
+@media (max-width: 768px) {
+  .header {
+    padding: 12px;
+  }
+
+  .content {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .summary-card,
+  .panel {
+    padding: 14px;
+  }
+
+  .chart-wrap {
+    height: 220px;
+  }
+
+  .chart-wrap.tall,
+  .pie-wrap {
+    height: 260px;
+  }
+
+  .panel-header {
+    flex-direction: column;
+  }
+}
+
 @media (min-width: 768px) {
   .app,
   .statistics-screen {
