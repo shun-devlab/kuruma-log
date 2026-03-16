@@ -8,22 +8,6 @@
       <div class="header-date">{{ today }}</div>
     </header>
 
-    <div v-if="upcomingMaintenance.length > 0" class="upcoming-banner">
-      <button class="upcoming-toggle" @click="showUpcoming = !showUpcoming">
-        <span>【次回予定】⚠️</span>
-        <span class="toggle-icon">{{ showUpcoming ? '▾' : '▸' }}</span>
-      </button>
-      <div v-if="showUpcoming">
-        <div v-for="item in upcomingMaintenance.slice(0, 2)" :key="item.type" class="upcoming-item">
-          <span class="icon">{{ getIcon(item.type) }}</span>
-          <span class="label">{{ getLabel(item.type) }}</span>
-          <span class="remaining" v-if="item.remaining_km !== undefined">
-            あと {{ item.remaining_km.toLocaleString('ja-JP') }}km
-          </span>
-          <span class="date">{{ item.estimated_date || '予定なし' }}</span>
-        </div>
-      </div>
-    </div>
 
     <div class="timeline">
       <div class="timeline-header-row">
@@ -114,8 +98,7 @@ export default {
       selectedRecord: null,
       upcomingMaintenance: [],
       currentMileage: 0,
-      selectedTimelineWeek: 'current',
-      showUpcoming: false
+      selectedTimelineWeek: 'current'
     }
   },
   computed: {
