@@ -55,19 +55,16 @@
     </div>
 
     <div class="record-panel-section">
-      <div class="record-panel-tabs">
-        <button class="record-tab" :class="{ active: categoryView === 'primary' }" @click="categoryView = 'primary'">よく使う</button>
-        <button class="record-tab" :class="{ active: categoryView === 'detail' }" @click="categoryView = 'detail'">詳細カテゴリ</button>
-      </div>
-
-      <div class="record-buttons">
+      <div class="record-strip-label">記録カテゴリ</div>
+      <div class="record-buttons-scroll">
         <button
-          v-for="recordType in visibleRecordTypes"
+          v-for="recordType in recordTypes"
           :key="recordType.value"
           @click="selectRecord(recordType.value)"
           class="btn-record"
         >
-          {{ recordType.icon }}<br>{{ recordType.label }}
+          <span class="btn-record-icon">{{ recordType.icon }}</span>
+          <span class="btn-record-label">{{ recordType.label }}</span>
         </button>
       </div>
     </div>
@@ -109,8 +106,7 @@ export default {
       selectedRecordType: null,
       selectedRecord: null,
       upcomingMaintenance: [],
-      currentMileage: 0,
-      categoryView: 'primary'
+      currentMileage: 0
     }
   },
   computed: {
@@ -139,9 +135,6 @@ export default {
     },
     recordTypes() {
       return RECORD_TYPES
-    },
-    visibleRecordTypes() {
-      return this.recordTypes.filter((item) => item.group === this.categoryView)
     }
   },
   watch: {
@@ -451,70 +444,86 @@ export default {
   bottom: 0;
   background: #f5f5f5;
   border-top: 1px solid #dddddd;
+  padding: 12px 0 16px;
 }
 
-.record-panel-tabs {
+.record-strip-label {
+  font-size: 13px;
+  font-weight: 700;
+  color: #666666;
+  padding: 0 16px 10px;
+}
+
+.record-buttons-scroll {
   display: flex;
-  gap: 8px;
-  padding: 12px 16px 0;
+  gap: 10px;
+  overflow-x: auto;
+  padding: 0 16px;
+  scroll-snap-type: x proximity;
+  -webkit-overflow-scrolling: touch;
 }
 
-.record-tab {
-  border: none;
-  background: #e9e9e9;
-  color: #555555;
-  padding: 10px 14px;
+.record-buttons-scroll::-webkit-scrollbar {
+  height: 6px;
+}
+
+.record-buttons-scroll::-webkit-scrollbar-thumb {
+  background: #d0d0d0;
   border-radius: 999px;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-.record-tab.active {
-  background: #ff9500;
-  color: #ffffff;
-}
-
-.record-buttons {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  background: #f5f5f5;
-  padding: 12px 16px 16px;
-  gap: 8px;
 }
 
 .btn-record {
+  flex: 0 0 88px;
+  aspect-ratio: 1 / 1;
   background: #ffffff;
   border: 1px solid #dddddd;
-  border-radius: 8px;
-  padding: 12px 8px;
+  border-radius: 16px;
+  padding: 10px 8px;
   font-size: 12px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 8px;
   transition: all 0.2s;
-  min-height: 72px;
+  scroll-snap-align: start;
+}
+
+.btn-record-icon {
+  font-size: 24px;
+  line-height: 1;
+}
+
+.btn-record-label {
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.25;
+  text-align: center;
+  word-break: keep-all;
 }
 
 .btn-record:hover {
-  background: #f5f5f5;
+  background: #fff8ef;
   border-color: #ff9500;
+  transform: translateY(-1px);
 }
 
 @media (max-width: 480px) {
-  .record-panel-tabs {
-    padding: 12px 8px 0;
+  .record-panel-section {
+    padding-bottom: 12px;
   }
 
-  .record-buttons {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    padding: 12px 8px;
+  .record-strip-label {
+    padding: 0 12px 8px;
+  }
+
+  .record-buttons-scroll {
+    padding: 0 12px;
   }
 
   .btn-record {
-    min-height: 68px;
+    flex-basis: 82px;
   }
 }
 </style>
