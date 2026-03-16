@@ -28,10 +28,10 @@
     <div class="timeline">
       <div class="timeline-header-row">
         <h2>【タイムライン】</h2>
-        <select v-model="selectedTimelineDate" class="timeline-date-select">
-          <option value="all">すべての日付</option>
-          <option v-for="date in timelineDateOptions" :key="date" :value="date">
-            {{ formatDate(date) }}
+        <select v-model="selectedTimelineWeek" class="timeline-date-select">
+          <option value="all">すべての週</option>
+          <option v-for="week in timelineWeekOptions" :key="week.value" :value="week.value">
+            {{ week.label }}
           </option>
         </select>
       </div>
@@ -120,7 +120,7 @@ export default {
       selectedRecord: null,
       upcomingMaintenance: [],
       currentMileage: 0,
-      selectedTimelineDate: 'all',
+      selectedTimelineWeek: 'current',
       showUpcoming: false
     }
   },
@@ -151,12 +151,35 @@ export default {
     recordTypes() {
       return RECORD_TYPES
     },
-    timelineDateOptions() {
-      return [...new Set(this.records.map((record) => record.date))].sort().reverse()
+    timelineWeekOptions() {
+      const seen = new Map()
+      this.records.forEach((record) => {
+        const date = new Date(`${record.date}T00:00:00`)
+        const start = this.getWeekStart(date)
+        const end = new Date(start)
+        end.setDate(start.getDate() + 6)
+        const value = start.toISOString().split('T')[0]
+        if (!seen.has(value)) {
+          seen.set(value, {
+            value,
+            label: `${this.formatDate(value)} 〜 ${this.formatDate(end.toISOString().split('T')[0])}`
+          })
+        }
+      })
+      return Array.from(seen.values()).sort((a, b) => (a.value < b.value ? 1 : -1))
     },
     filteredTimelineRecords() {
-      if (this.selectedTimelineDate === 'all') return this.records
-      return this.records.filter((record) => record.date === this.selectedTimelineDate)
+      if (this.selectedTimelineWeek === 'all') return this.records
+      const baseDate = this.selectedTimelineWeek === 'current'
+        ? this.getWeekStart(new Date())
+        : new Date(`${this.selectedTimelineWeek}T00:00:00`)
+      const start = this.getWeekStart(baseDate)
+      const end = new Date(start)
+      end.setDate(start.getDate() + 6)
+      return this.records.filter((record) => {
+        const date = new Date(`${record.date}T00:00:00`)
+        return date >= start && date <= end
+      })
     }
   },
   watch: {
@@ -260,6 +283,14 @@ export default {
     },
     formatCurrency(value) {
       return `¥${Math.round(Number(value) || 0).toLocaleString('ja-JP')}`
+    },
+    getWeekStart(date) {
+      const target = new Date(date)
+      const day = target.getDay()
+      const diff = day === 0 ? -6 : 1 - day
+      target.setDate(target.getDate() + diff)
+      target.setHours(0, 0, 0, 0)
+      return target
     },
     getFuelEfficiency(record) {
       const mileage = Number(record?.mileage) || 0
