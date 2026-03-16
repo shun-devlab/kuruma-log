@@ -161,10 +161,12 @@ export default {
           await maintenanceStore.replaceAll(payload.records)
         }
         this.message = 'JSONバックアップを読み込みました。'
+        window.alert('JSONの読み込みに成功しました。')
         this.$emit('saved')
       } catch (error) {
         console.error(error)
         this.message = 'JSONの読み込みに失敗しました。'
+        window.alert('JSONの読み込みに失敗しました。ファイル形式を確認してください。')
       } finally {
         if (this.$refs.fileInput) this.$refs.fileInput.value = ''
       }
