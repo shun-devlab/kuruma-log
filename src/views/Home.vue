@@ -54,15 +54,22 @@
       </div>
     </div>
 
-    <div class="record-buttons">
-      <button
-        v-for="recordType in recordTypes"
-        :key="recordType.value"
-        @click="selectRecord(recordType.value)"
-        class="btn-record"
-      >
-        {{ recordType.icon }}<br>{{ recordType.label }}
-      </button>
+    <div class="record-panel-section">
+      <div class="record-panel-tabs">
+        <button class="record-tab" :class="{ active: categoryView === 'primary' }" @click="categoryView = 'primary'">よく使う</button>
+        <button class="record-tab" :class="{ active: categoryView === 'detail' }" @click="categoryView = 'detail'">詳細カテゴリ</button>
+      </div>
+
+      <div class="record-buttons">
+        <button
+          v-for="recordType in visibleRecordTypes"
+          :key="recordType.value"
+          @click="selectRecord(recordType.value)"
+          class="btn-record"
+        >
+          {{ recordType.icon }}<br>{{ recordType.label }}
+        </button>
+      </div>
     </div>
 
     <RecordPanel
@@ -102,7 +109,8 @@ export default {
       selectedRecordType: null,
       selectedRecord: null,
       upcomingMaintenance: [],
-      currentMileage: 0
+      currentMileage: 0,
+      categoryView: 'primary'
     }
   },
   computed: {
@@ -131,6 +139,9 @@ export default {
     },
     recordTypes() {
       return RECORD_TYPES
+    },
+    visibleRecordTypes() {
+      return this.recordTypes.filter((item) => item.group === this.categoryView)
     }
   },
   watch: {
@@ -435,15 +446,40 @@ export default {
   color: #ff9500;
 }
 
+.record-panel-section {
+  position: sticky;
+  bottom: 0;
+  background: #f5f5f5;
+  border-top: 1px solid #dddddd;
+}
+
+.record-panel-tabs {
+  display: flex;
+  gap: 8px;
+  padding: 12px 16px 0;
+}
+
+.record-tab {
+  border: none;
+  background: #e9e9e9;
+  color: #555555;
+  padding: 10px 14px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.record-tab.active {
+  background: #ff9500;
+  color: #ffffff;
+}
+
 .record-buttons {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   background: #f5f5f5;
-  padding: 16px;
+  padding: 12px 16px 16px;
   gap: 8px;
-  position: sticky;
-  bottom: 0;
-  border-top: 1px solid #dddddd;
 }
 
 .btn-record {
@@ -468,6 +504,10 @@ export default {
 }
 
 @media (max-width: 480px) {
+  .record-panel-tabs {
+    padding: 12px 8px 0;
+  }
+
   .record-buttons {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     padding: 12px 8px;
