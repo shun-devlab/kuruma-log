@@ -2,7 +2,6 @@
   <div class="statistics-screen">
     <header class="header">
       <div class="header-top">
-        <button class="btn-back" @click="$emit('back')">←</button>
         <div>
           <h1>📊 統計ダッシュボード</h1>
           <p class="header-subtitle">記録の傾向をひと目で確認</p>

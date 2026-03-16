@@ -2,7 +2,6 @@
   <div class="history-screen">
     <header class="header">
       <div class="header-top">
-        <button class="btn-back" @click="$emit('back')">←</button>
         <div>
           <h1>📚 記録一覧</h1>
           <p class="header-subtitle">あとから見返しやすい履歴ビュー</p>
