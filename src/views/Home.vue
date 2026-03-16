@@ -470,8 +470,8 @@ export default {
 
 .timeline-week-nav {
   display: flex;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 10px;
 }
 
 .week-nav-btn {
@@ -479,9 +479,12 @@ export default {
   background: #f2f2f2;
   color: #333333;
   border-radius: 999px;
-  padding: 8px 12px;
+  padding: 7px 10px;
+  min-height: 38px;
   cursor: pointer;
   font-weight: 600;
+  font-size: 13px;
+  flex: 1;
 }
 
 .week-nav-btn.current {
@@ -619,27 +622,27 @@ export default {
   position: fixed;
   left: 50%;
   transform: translateX(-50%);
-  bottom: 72px;
+  bottom: 62px;
   width: min(960px, 100%);
   background: #f5f5f5;
   border-top: 1px solid #dddddd;
-  padding: 12px 0 16px;
+  padding: 8px 0 10px;
   z-index: 45;
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .record-strip-label {
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 700;
   color: #666666;
-  padding: 0 16px 10px;
+  padding: 0 14px 6px;
 }
 
 .record-buttons-scroll {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   overflow-x: auto;
-  padding: 0 16px;
+  padding: 0 14px;
   scroll-snap-type: x proximity;
   -webkit-overflow-scrolling: touch;
 }
@@ -654,32 +657,32 @@ export default {
 }
 
 .btn-record {
-  flex: 0 0 88px;
+  flex: 0 0 78px;
   aspect-ratio: 1 / 1;
   background: #ffffff;
   border: 1px solid #dddddd;
-  border-radius: 16px;
-  padding: 10px 8px;
-  font-size: 12px;
+  border-radius: 14px;
+  padding: 8px 6px;
+  font-size: 11px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.2s;
   scroll-snap-align: start;
 }
 
 .btn-record-icon {
-  font-size: 24px;
+  font-size: 21px;
   line-height: 1;
 }
 
 .btn-record-label {
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 600;
-  line-height: 1.25;
+  line-height: 1.15;
   text-align: center;
   word-break: keep-all;
 }
@@ -751,8 +754,8 @@ export default {
   }
 
   .timeline-item {
-    margin-bottom: 12px;
-    padding-bottom: 10px;
+    margin-bottom: 10px;
+    padding: 8px 6px 10px;
   }
 
   .item-content {
@@ -772,32 +775,32 @@ export default {
   }
 
   .record-panel-section {
-    padding-bottom: 12px;
-    bottom: 72px;
+    padding-bottom: 8px;
+    bottom: 62px;
   }
 
   .record-strip-label {
-    padding: 0 12px 8px;
+    padding: 0 12px 6px;
   }
 
   .record-buttons-scroll {
     padding: 0 12px;
-    gap: 8px;
+    gap: 6px;
   }
 
   .btn-record {
-    flex-basis: 78px;
-    min-height: 78px;
-    border-radius: 14px;
-    padding: 8px 6px;
+    flex-basis: 72px;
+    min-height: 72px;
+    border-radius: 12px;
+    padding: 6px 5px;
   }
 
   .btn-record-icon {
-    font-size: 22px;
+    font-size: 19px;
   }
 
   .btn-record-label {
-    font-size: 10px;
+    font-size: 9px;
   }
 }
 </style>

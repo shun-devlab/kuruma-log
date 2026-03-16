@@ -121,7 +121,13 @@ textarea {
   margin: 0 auto;
   background: #ffffff;
   min-height: 100vh;
-  padding-bottom: 168px;
+  padding-bottom: 144px;
+}
+
+@media (max-width: 480px) {
+  .app {
+    padding-bottom: 132px;
+  }
 }
 
 .bottom-tabs {
@@ -142,20 +148,20 @@ textarea {
 .tab-btn {
   border: none;
   background: none;
-  padding: 10px 8px 12px;
-  min-height: 72px;
+  padding: 8px 8px 10px;
+  min-height: 62px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 3px;
   color: #777777;
   cursor: pointer;
   font-weight: 600;
 }
 
 .tab-btn span {
-  font-size: 12px;
+  font-size: 11px;
 }
 
 .tab-btn.active {
