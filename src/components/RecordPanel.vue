@@ -20,6 +20,12 @@
         </div>
 
 
+        <!-- 給油量（ガソリンのみ） -->
+        <div v-if="recordType === 'gasoline'" class="form-group">
+          <label>給油量 (L) *</label>
+          <input v-model.number="form.liters" type="number" step="0.1" min="0" placeholder="例: 32.5" required>
+        </div>
+
         <!-- 金額（オプション） -->
         <div class="form-group">
           <label>金額（オプション）</label>
@@ -72,6 +78,7 @@ export default {
         type: this.recordType,
         date: this.getTodayDate(),
         mileage: this.suggestedMileage,
+        liters: null,
         amount: null,
         memo: ''
       }
@@ -88,6 +95,7 @@ export default {
         type: this.initialRecord.type,
         date: this.initialRecord.date || this.getTodayDate(),
         mileage: this.initialRecord.mileage ?? this.suggestedMileage,
+        liters: this.initialRecord.liters ?? null,
         amount: this.initialRecord.amount ?? null,
         memo: this.initialRecord.memo ?? ''
       }
