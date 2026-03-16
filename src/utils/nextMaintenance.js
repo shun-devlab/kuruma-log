@@ -26,32 +26,35 @@ export function calculateNextMaintenance(records, currentMileage, settings) {
   }
 
   // タイヤ交換の計算
+  const tireChangeKm = Number(settings.tire_change_km) || 50000
   const lastTireChange = records.find(r => r.type === 'tire')
   if (lastTireChange) {
-    const remainingKm = 50000 - (currentMileage - (lastTireChange.mileage || 0))
+    const remainingKm = tireChangeKm - (currentMileage - (lastTireChange.mileage || 0))
     upcoming.push({
       type: 'tire',
       remaining_km: Math.max(0, remainingKm),
-      estimated_date: new Date(Date.now() + remainingKm * 86400000 / 10000).toISOString().split('T')[0],
+      estimated_date: new Date(Date.now() + Math.max(0, remainingKm) * 86400000 / 10000).toISOString().split('T')[0],
       priority: remainingKm < 5000 ? 'high' : 'low'
     })
   } else {
     upcoming.push({
       type: 'tire',
-      remaining_km: 50000,
+      remaining_km: tireChangeKm,
       estimated_date: 'Unknown',
       priority: 'low'
     })
   }
 
-  // 洗車推奨（月1回）
+  // 洗車推奨
+  const washIntervalDays = Number(settings.wash_interval_days) || 30
   const lastWash = records.find(r => r.type === 'wash')
   if (lastWash) {
     const daysSinceWash = (Date.now() - new Date(lastWash.date).getTime()) / 86400000
     upcoming.push({
       type: 'wash',
       days_since: Math.floor(daysSinceWash),
-      priority: daysSinceWash > 30 ? 'medium' : 'low'
+      estimated_date: new Date(new Date(lastWash.date).getTime() + washIntervalDays * 86400000).toISOString().split('T')[0],
+      priority: daysSinceWash > washIntervalDays ? 'medium' : 'low'
     })
   }
 
