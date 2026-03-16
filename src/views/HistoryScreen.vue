@@ -44,6 +44,16 @@
           </div>
 
           <div class="filter-group">
+            <label for="date">日付</label>
+            <select id="date" v-model="selectedDate">
+              <option value="all">すべて</option>
+              <option v-for="date in dateOptions" :key="date" :value="date">
+                {{ date }}
+              </option>
+            </select>
+          </div>
+
+          <div class="filter-group">
             <label for="sort">並び順</label>
             <select id="sort" v-model="sortOrder">
               <option value="desc">新しい順</option>
@@ -69,26 +79,33 @@
           条件に合う記録がありません。
         </div>
 
-        <article
-          v-for="record in filteredRecords"
-          :key="record.id"
-          class="record-card"
-          :class="{ active: selectedRecord && selectedRecord.id === record.id }"
-          @click="selectedRecord = record"
-        >
-          <div class="record-top">
-            <div>
-              <div class="record-label">{{ getIcon(record.type) }} {{ getLabel(record.type) }}</div>
-              <div class="record-date">{{ formatDate(record.date) }}</div>
+        <div v-for="group in groupedRecords" :key="group.date" class="date-group">
+          <div class="date-group-header">
+            <strong>{{ formatDate(group.date) }}</strong>
+            <span>{{ group.records.length }}件</span>
+          </div>
+
+          <article
+            v-for="record in group.records"
+            :key="record.id"
+            class="record-card"
+            :class="{ active: selectedRecord && selectedRecord.id === record.id }"
+            @click="selectedRecord = record"
+          >
+            <div class="record-top">
+              <div>
+                <div class="record-label">{{ getIcon(record.type) }} {{ getLabel(record.type) }}</div>
+                <div class="record-date">{{ formatDate(record.date) }}</div>
+              </div>
+              <div class="record-amount" v-if="record.amount">{{ formatCurrency(record.amount) }}</div>
             </div>
-            <div class="record-amount" v-if="record.amount">{{ formatCurrency(record.amount) }}</div>
-          </div>
-          <div class="record-meta">
-            <span v-if="record.mileage">{{ Number(record.mileage).toLocaleString('ja-JP') }}km</span>
-            <span v-if="record.memo">{{ record.memo }}</span>
-            <span v-if="!record.mileage && !record.memo">メモなし</span>
-          </div>
-        </article>
+            <div class="record-meta">
+              <span v-if="record.mileage">{{ Number(record.mileage).toLocaleString('ja-JP') }}km</span>
+              <span v-if="record.memo">{{ record.memo }}</span>
+              <span v-if="!record.mileage && !record.memo">メモなし</span>
+            </div>
+          </article>
+        </div>
       </section>
 
       <section v-if="selectedRecord" class="detail-panel">
@@ -147,6 +164,7 @@ export default {
       searchQuery: '',
       selectedType: 'all',
       selectedMonth: 'all',
+      selectedDate: 'all',
       sortOrder: 'desc',
       selectedRecord: null
     }
@@ -158,11 +176,15 @@ export default {
     monthOptions() {
       return [...new Set(this.records.map((record) => `${record.date.slice(0, 7)}`))].sort().reverse()
     },
+    dateOptions() {
+      return [...new Set(this.records.map((record) => record.date))].sort().reverse()
+    },
     filteredRecords() {
       const query = this.searchQuery.toLowerCase()
       const filtered = this.records.filter((record) => {
         const matchesType = this.selectedType === 'all' || record.type === this.selectedType
         const matchesMonth = this.selectedMonth === 'all' || record.date.startsWith(this.selectedMonth)
+        const matchesDate = this.selectedDate === 'all' || record.date === this.selectedDate
         const searchable = [
           this.getLabel(record.type),
           record.type,
@@ -170,7 +192,7 @@ export default {
           record.memo || ''
         ].join(' ').toLowerCase()
         const matchesQuery = !query || searchable.includes(query)
-        return matchesType && matchesMonth && matchesQuery
+        return matchesType && matchesMonth && matchesDate && matchesQuery
       })
 
       return filtered.sort((a, b) => {
@@ -181,6 +203,14 @@ export default {
     },
     filteredExpense() {
       return this.filteredRecords.reduce((sum, record) => sum + (Number(record.amount) || 0), 0)
+    },
+    groupedRecords() {
+      const groups = new Map()
+      this.filteredRecords.forEach((record) => {
+        if (!groups.has(record.date)) groups.set(record.date, [])
+        groups.get(record.date).push(record)
+      })
+      return Array.from(groups.entries()).map(([date, records]) => ({ date, records }))
     }
   },
   watch: {
@@ -299,8 +329,32 @@ export default {
 
 .filter-row {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 12px;
+}
+
+.date-group + .date-group {
+  margin-top: 16px;
+}
+
+.date-group-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+  color: #666666;
+  font-size: 13px;
+}
+
+.date-group-header strong {
+  color: #333333;
+  font-size: 14px;
+}
+
+.date-group-header span {
+  background: #f2f2f2;
+  border-radius: 999px;
+  padding: 4px 8px;
 }
 
 .filter-group {
