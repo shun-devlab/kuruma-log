@@ -89,7 +89,7 @@ export default {
       default: null
     }
   },
-  emits: ['open-stats', 'open-history', 'consume-initial-edit'],
+  emits: ['open-stats', 'open-history', 'open-settings', 'consume-initial-edit'],
   data() {
     return {
       records: [],
@@ -199,7 +199,7 @@ export default {
       this.selectedRecordType = null
     },
     openSettings() {
-      console.log('Open settings')
+      this.$emit('open-settings')
     },
     openStats() {
       this.$emit('open-stats')

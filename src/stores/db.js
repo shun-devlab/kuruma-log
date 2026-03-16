@@ -58,6 +58,21 @@ export const maintenanceStore = {
       records,
       settings
     }
+  },
+
+  // 全置換（インポート用）
+  async replaceAll(records) {
+    await db.transaction('rw', db.maintenance_records, async () => {
+      await db.maintenance_records.clear()
+      const normalized = records.map((record) => ({
+        ...record,
+        created_at: record.created_at || new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }))
+      if (normalized.length > 0) {
+        await db.maintenance_records.bulkAdd(normalized)
+      }
+    })
   }
 }
 
@@ -71,7 +86,9 @@ export const settingsStore = {
       current_mileage: 0,
       oil_change_km: 5000,
       oil_change_months: 6,
-      fuel_alert_threshold: 25
+      fuel_alert_threshold: 25,
+      tire_change_km: 50000,
+      wash_interval_days: 30
     }
   },
 

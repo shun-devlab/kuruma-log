@@ -6,6 +6,7 @@
       @consume-initial-edit="pendingEditRecord = null"
       @open-stats="showStatistics"
       @open-history="showHistory"
+      @open-settings="showSettings"
     />
     <StatisticsScreen
       v-else-if="currentPage === 'statistics'"
@@ -14,11 +15,17 @@
       @back="currentPage = 'home'"
     />
     <HistoryScreen
-      v-else
+      v-else-if="currentPage === 'history'"
       :records="historyRecords"
       @back="currentPage = 'home'"
       @edit-record="openHistoryRecordEditor"
       @delete-record="deleteHistoryRecord"
+    />
+    <SettingsScreen
+      v-else
+      :settings="settingsPayload"
+      @back="currentPage = 'home'"
+      @saved="refreshHomeAfterSettings"
     />
   </div>
 </template>
@@ -27,13 +34,15 @@
 import Home from './views/Home.vue'
 import StatisticsScreen from './views/StatisticsScreen.vue'
 import HistoryScreen from './views/HistoryScreen.vue'
-import { maintenanceStore } from './stores/db'
+import SettingsScreen from './views/SettingsScreen.vue'
+import { maintenanceStore, settingsStore } from './stores/db'
 
 export default {
   components: {
     Home,
     StatisticsScreen,
-    HistoryScreen
+    HistoryScreen,
+    SettingsScreen
   },
   data() {
     return {
@@ -43,7 +52,8 @@ export default {
         settings: {}
       },
       historyRecords: [],
-      pendingEditRecord: null
+      pendingEditRecord: null,
+      settingsPayload: {}
     }
   },
   methods: {
@@ -55,6 +65,10 @@ export default {
       this.historyRecords = await maintenanceStore.getAll()
       this.currentPage = 'history'
     },
+    async showSettings() {
+      this.settingsPayload = await settingsStore.get()
+      this.currentPage = 'settings'
+    },
     openHistoryRecordEditor(record) {
       this.pendingEditRecord = record
       this.currentPage = 'home'
@@ -63,6 +77,9 @@ export default {
       if (!record?.id) return
       await maintenanceStore.delete(record.id)
       this.historyRecords = await maintenanceStore.getAll()
+    },
+    async refreshHomeAfterSettings() {
+      this.settingsPayload = await settingsStore.get()
     }
   }
 }
