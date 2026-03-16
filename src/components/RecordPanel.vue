@@ -13,17 +13,22 @@
           <input v-model="form.date" type="date" required>
         </div>
 
-        <!-- 走行距離（ガソリン / 総走行距離更新のみ必須） -->
-        <div v-if="['gasoline', 'odometer'].includes(recordType)" class="form-group">
-          <label>{{ recordType === 'gasoline' ? '走行距離 *' : '総走行距離 *' }}</label>
+        <!-- 総走行距離更新は必須 / ガソリンは任意 -->
+        <div v-if="recordType === 'odometer'" class="form-group">
+          <label>総走行距離 *</label>
           <input v-model.number="form.mileage" type="number" placeholder="km" required>
+        </div>
+
+        <div v-else-if="recordType === 'gasoline'" class="form-group">
+          <label>走行距離（オプション）</label>
+          <input v-model.number="form.mileage" type="number" placeholder="km">
         </div>
 
 
         <!-- 給油量（ガソリンのみ） -->
         <div v-if="recordType === 'gasoline'" class="form-group">
-          <label>給油量 (L) *</label>
-          <input v-model.number="form.liters" type="number" step="0.1" min="0" placeholder="例: 32.5" required>
+          <label>給油量 (L)（オプション）</label>
+          <input v-model.number="form.liters" type="number" step="0.1" min="0" placeholder="例: 32.5">
         </div>
 
         <!-- 金額（オプション） -->
