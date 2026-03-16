@@ -509,7 +509,68 @@ export default {
   transform: translateY(-1px);
 }
 
+@media (max-width: 768px) {
+  .header {
+    padding: 12px;
+  }
+
+  .header-content h1 {
+    font-size: 18px;
+  }
+
+  .timeline,
+  .monthly-expense,
+  .upcoming-banner {
+    margin-left: 12px;
+    margin-right: 12px;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .item-content {
+    gap: 10px;
+  }
+
+  .item-actions {
+    flex-direction: column;
+    gap: 6px;
+  }
+}
+
 @media (max-width: 480px) {
+  .header {
+    padding: 10px 12px;
+  }
+
+  .header-date {
+    font-size: 12px;
+  }
+
+  .timeline {
+    padding: 12px;
+  }
+
+  .timeline-item {
+    margin-bottom: 12px;
+    padding-bottom: 10px;
+  }
+
+  .item-content {
+    align-items: flex-start;
+  }
+
+  .item-main {
+    min-width: 0;
+  }
+
+  .item-content .label {
+    font-size: 13px;
+  }
+
+  .info {
+    font-size: 11px;
+  }
+
   .record-panel-section {
     padding-bottom: 12px;
   }
@@ -520,10 +581,22 @@ export default {
 
   .record-buttons-scroll {
     padding: 0 12px;
+    gap: 8px;
   }
 
   .btn-record {
-    flex-basis: 82px;
+    flex-basis: 78px;
+    min-height: 78px;
+    border-radius: 14px;
+    padding: 8px 6px;
+  }
+
+  .btn-record-icon {
+    font-size: 22px;
+  }
+
+  .btn-record-label {
+    font-size: 10px;
   }
 }
 </style>
