@@ -29,6 +29,7 @@
       <div class="timeline-header-row">
         <h2>【タイムライン】</h2>
         <select v-model="selectedTimelineWeek" class="timeline-date-select">
+          <option value="current">今週</option>
           <option value="all">すべての週</option>
           <option v-for="week in timelineWeekOptions" :key="week.value" :value="week.value">
             {{ week.label }}
