@@ -125,7 +125,14 @@ export default {
       return suggestMileage(this.records, this.currentMileage)
     },
     recordTypes() {
-      return RECORD_TYPES
+      const order = Array.isArray(this.settings.record_order) ? this.settings.record_order : []
+      if (!order.length) return RECORD_TYPES
+      const orderMap = new Map(order.map((value, index) => [value, index]))
+      return [...RECORD_TYPES].sort((a, b) => {
+        const left = orderMap.has(a.value) ? orderMap.get(a.value) : Number.MAX_SAFE_INTEGER
+        const right = orderMap.has(b.value) ? orderMap.get(b.value) : Number.MAX_SAFE_INTEGER
+        return left - right
+      })
     },
     timelineWeekOptions() {
       const seen = new Map()

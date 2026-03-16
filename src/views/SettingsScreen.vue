@@ -61,6 +61,19 @@
       </section>
 
       <section class="panel">
+        <h2>記録カテゴリの並び順</h2>
+        <div class="category-sort-list">
+          <div v-for="(type, index) in form.record_order" :key="type" class="category-sort-item">
+            <div class="category-sort-label">{{ getCategoryLabel(type) }}</div>
+            <div class="category-sort-actions">
+              <button class="btn-secondary small" :disabled="index === 0" @click="moveCategory(index, -1)">↑</button>
+              <button class="btn-secondary small" :disabled="index === form.record_order.length - 1" @click="moveCategory(index, 1)">↓</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
         <h2>データ管理</h2>
         <div class="data-actions">
           <button class="btn-primary" @click="exportJson">JSONを書き出す</button>
@@ -83,6 +96,7 @@
 
 <script>
 import { maintenanceStore, settingsStore } from '../stores/db'
+import { RECORD_TYPES, getRecordMeta } from '../utils/recordMeta'
 
 const DEFAULT_SETTINGS = {
   car_name: '私の車',
@@ -91,7 +105,8 @@ const DEFAULT_SETTINGS = {
   oil_change_months: 6,
   fuel_alert_threshold: 25,
   tire_change_km: 50000,
-  wash_interval_days: 30
+  wash_interval_days: 30,
+  record_order: RECORD_TYPES.map((item) => item.value)
 }
 
 export default {
@@ -119,7 +134,10 @@ export default {
       oil_change_months: Number(this.settings.oil_change_months) || DEFAULT_SETTINGS.oil_change_months,
       fuel_alert_threshold: Number(this.settings.fuel_alert_threshold) || DEFAULT_SETTINGS.fuel_alert_threshold,
       tire_change_km: Number(this.settings.tire_change_km) || DEFAULT_SETTINGS.tire_change_km,
-      wash_interval_days: Number(this.settings.wash_interval_days) || DEFAULT_SETTINGS.wash_interval_days
+      wash_interval_days: Number(this.settings.wash_interval_days) || DEFAULT_SETTINGS.wash_interval_days,
+      record_order: Array.isArray(this.settings.record_order) && this.settings.record_order.length
+        ? this.settings.record_order.filter((value) => DEFAULT_SETTINGS.record_order.includes(value))
+        : [...DEFAULT_SETTINGS.record_order]
     }
   },
   methods: {
@@ -173,9 +191,22 @@ export default {
     },
     resetDefaults() {
       this.form = {
-        ...DEFAULT_SETTINGS
+        ...DEFAULT_SETTINGS,
+        record_order: [...DEFAULT_SETTINGS.record_order]
       }
       this.message = '初期値をフォームに反映しました。保存すると適用されます。'
+    },
+    moveCategory(index, direction) {
+      const nextIndex = index + direction
+      if (nextIndex < 0 || nextIndex >= this.form.record_order.length) return
+      const order = [...this.form.record_order]
+      const [item] = order.splice(index, 1)
+      order.splice(nextIndex, 0, item)
+      this.form.record_order = order
+    },
+    getCategoryLabel(type) {
+      const meta = getRecordMeta(type)
+      return `${meta.icon} ${meta.fullLabel}`
     }
   }
 }
@@ -264,11 +295,51 @@ input {
   border-radius: 10px;
   background: #ffffff;
 }
+.category-sort-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.category-sort-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  background: #f8f8f8;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.category-sort-label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.category-sort-actions {
+  display: flex;
+  gap: 8px;
+}
+
 .data-actions,
 .actions {
   display: flex;
   gap: 12px;
   flex-wrap: wrap;
+}
+
+.small {
+  padding: 8px 12px;
+  min-width: 44px;
+  min-height: 36px;
+  line-height: 1;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.small:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 .btn-primary,
 .btn-secondary,
