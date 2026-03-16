@@ -136,14 +136,21 @@ export default {
       tire_change_km: Number(this.settings.tire_change_km) || DEFAULT_SETTINGS.tire_change_km,
       wash_interval_days: Number(this.settings.wash_interval_days) || DEFAULT_SETTINGS.wash_interval_days,
       record_order: Array.isArray(this.settings.record_order) && this.settings.record_order.length
-        ? this.settings.record_order.filter((value) => DEFAULT_SETTINGS.record_order.includes(value))
+        ? [
+            ...this.settings.record_order.filter((value) => DEFAULT_SETTINGS.record_order.includes(value)),
+            ...DEFAULT_SETTINGS.record_order.filter((value) => !this.settings.record_order.includes(value))
+          ]
         : [...DEFAULT_SETTINGS.record_order]
     }
   },
   methods: {
     async save() {
-      await settingsStore.save(this.form)
+      await settingsStore.save({
+        ...this.form,
+        record_order: [...this.form.record_order]
+      })
       this.message = '設定を保存しました。'
+      window.alert('設定を保存しました。')
       this.$emit('saved')
     },
     async exportJson() {
