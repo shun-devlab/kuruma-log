@@ -28,13 +28,11 @@
     <div class="timeline">
       <div class="timeline-header-row">
         <h2>【タイムライン】</h2>
-        <select v-model="selectedTimelineWeek" class="timeline-date-select">
-          <option value="current">今週</option>
-          <option value="all">すべての週</option>
-          <option v-for="week in timelineWeekOptions" :key="week.value" :value="week.value">
-            {{ week.label }}
-          </option>
-        </select>
+        <button class="timeline-period-button" @click="openWeekPicker">
+          <span>{{ currentTimelineWeekLabel }}</span>
+          <span class="toggle-icon">▾</span>
+        </button>
+        <input ref="weekDatePicker" type="date" class="hidden-date-input" @change="handleWeekDatePick" />
       </div>
       <div class="timeline-week-nav">
         <button class="week-nav-btn" @click="moveTimelineWeek(-1)">‹ 前週</button>
@@ -42,11 +40,7 @@
         <button class="week-nav-btn" @click="moveTimelineWeek(1)">次週 ›</button>
       </div>
       <div v-if="filteredTimelineRecords.length === 0" class="empty-state timeline-empty-state">
-        <div>この週に記録がありません。</div>
-        <div class="empty-actions">
-          <button class="btn-link" @click="moveTimelineWeek(-1)">前週を見る</button>
-          <button v-if="latestRecord" class="btn-link" @click="jumpToLatestWeek">最新の記録へ</button>
-        </div>
+        この週に記録がありません。
       </div>
       <div v-for="record in filteredTimelineRecords" :key="record.id" class="timeline-item" @click="editRecord(record.id)">
         <div class="item-date">{{ formatDate(record.date) }}</div>
@@ -179,6 +173,15 @@ export default {
       const endKey = this.toDateKey(end)
       return this.records.filter((record) => record.date >= startKey && record.date <= endKey)
     },
+    currentTimelineWeekLabel() {
+      const baseDate = this.selectedTimelineWeek === 'current'
+        ? this.getWeekStart(new Date())
+        : new Date(`${this.selectedTimelineWeek}T00:00:00`)
+      const start = this.getWeekStart(baseDate)
+      const end = new Date(start)
+      end.setDate(start.getDate() + 6)
+      return `${this.formatDate(this.toDateKey(start))} 〜 ${this.formatDate(this.toDateKey(end))}`
+    },
     latestRecord() {
       return this.records[0] || null
     }
@@ -309,9 +312,14 @@ export default {
       start.setDate(start.getDate() + direction * 7)
       this.selectedTimelineWeek = this.toDateKey(start)
     },
-    jumpToLatestWeek() {
-      if (!this.latestRecord) return
-      this.selectedTimelineWeek = this.toDateKey(this.getWeekStart(new Date(`${this.latestRecord.date}T00:00:00`)))
+    openWeekPicker() {
+      this.$refs.weekDatePicker?.showPicker?.()
+      this.$refs.weekDatePicker?.focus()
+    },
+    handleWeekDatePick(event) {
+      const value = event.target.value
+      if (!value) return
+      this.selectedTimelineWeek = this.toDateKey(this.getWeekStart(new Date(`${value}T00:00:00`)))
     },
     getFuelEfficiency(record) {
       const mileage = Number(record?.mileage) || 0
@@ -447,19 +455,34 @@ export default {
   color: #333333;
 }
 
-.timeline-date-select {
+.timeline-period-button {
   border: 1px solid #dddddd;
   border-radius: 10px;
   padding: 8px 10px;
   background: #ffffff;
   color: #333333;
   font-size: 13px;
-  max-width: 180px;
+  max-width: 220px;
+  width: 100%;
+  flex: 0 1 220px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  cursor: pointer;
 }
 
-.timeline-date-select:focus {
+.timeline-period-button:focus {
   outline: none;
   border-color: #ff9500;
+}
+
+.hidden-date-input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+  width: 1px;
+  height: 1px;
 }
 
 .timeline-week-nav {
@@ -730,9 +753,10 @@ export default {
     align-items: stretch;
   }
 
-  .timeline-date-select {
+  .timeline-period-button {
     max-width: none;
     width: 100%;
+    flex: 1 1 auto;
   }
 
   .timeline-week-nav {
