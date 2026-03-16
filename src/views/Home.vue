@@ -46,7 +46,7 @@
             <span class="label">{{ getLabel(record.type) }}</span>
             <div v-if="record.mileage" class="info">走行距離: {{ Number(record.mileage).toLocaleString('ja-JP') }}km</div>
             <div v-if="record.type === 'gasoline' && record.liters" class="info">給油量: {{ Number(record.liters).toLocaleString('ja-JP') }}L</div>
-            <div v-if="record.type === 'gasoline' && getFuelEfficiency(record.id)" class="info">燃費: {{ getFuelEfficiency(record.id) }} km/L</div>
+            <div v-if="record.type === 'gasoline' && getFuelEfficiency(record)" class="info">燃費: {{ getFuelEfficiency(record) }} km/L</div>
             <div v-if="record.amount" class="info">金額: {{ formatCurrency(record.amount) }}</div>
             <div v-if="record.memo" class="info memo">{{ record.memo }}</div>
           </div>
@@ -261,16 +261,11 @@ export default {
     formatCurrency(value) {
       return `¥${Math.round(Number(value) || 0).toLocaleString('ja-JP')}`
     },
-    getFuelEfficiency(recordId) {
-      const gasolineRecords = this.records.filter((record) => record.type === 'gasoline' && Number(record.mileage) > 0 && Number(record.liters) > 0)
-      const index = gasolineRecords.findIndex((record) => record.id === recordId)
-      if (index === -1 || index === gasolineRecords.length - 1) return null
-      const current = gasolineRecords[index]
-      const previous = gasolineRecords[index + 1]
-      const distance = Number(current.mileage) - Number(previous.mileage)
-      const liters = Number(current.liters)
-      if (distance <= 0 || liters <= 0) return null
-      return (distance / liters).toFixed(1)
+    getFuelEfficiency(record) {
+      const mileage = Number(record?.mileage) || 0
+      const liters = Number(record?.liters) || 0
+      if (mileage <= 0 || liters <= 0) return null
+      return (mileage / liters).toFixed(1)
     }
   },
   async mounted() {
