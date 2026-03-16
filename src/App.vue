@@ -121,26 +121,33 @@ textarea {
   margin: 0 auto;
   background: #ffffff;
   min-height: 100vh;
-  padding-bottom: 88px;
+  padding-bottom: 168px;
 }
 
 .bottom-tabs {
-  position: sticky;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
   bottom: 0;
+  width: min(960px, 100%);
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   background: rgba(255, 255, 255, 0.96);
   border-top: 1px solid #e5e5e5;
   backdrop-filter: blur(8px);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.06);
+  z-index: 50;
 }
 
 .tab-btn {
   border: none;
   background: none;
   padding: 10px 8px 12px;
+  min-height: 72px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   gap: 4px;
   color: #777777;
   cursor: pointer;

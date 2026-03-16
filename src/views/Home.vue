@@ -334,6 +334,7 @@ export default {
   flex-direction: column;
   min-height: 100vh;
   background: #ffffff;
+  padding-bottom: 164px;
 }
 
 .header {
@@ -609,11 +610,16 @@ export default {
 }
 
 .record-panel-section {
-  position: static;
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 72px;
+  width: min(960px, 100%);
   background: #f5f5f5;
   border-top: 1px solid #dddddd;
   padding: 12px 0 16px;
-  margin-bottom: 12px;
+  z-index: 45;
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.05);
 }
 
 .record-strip-label {
@@ -760,6 +766,7 @@ export default {
 
   .record-panel-section {
     padding-bottom: 12px;
+    bottom: 72px;
   }
 
   .record-strip-label {
