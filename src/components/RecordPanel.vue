@@ -21,7 +21,7 @@
         </div>
 
         <!-- 走行距離（その他オプション） -->
-        <div v-else-if="['tire', 'repair', 'wash', 'glass', 'lamp', 'supplies', 'parking', 'insurance', 'other'].includes(recordType)" class="form-group">
+        <div v-else-if="['tire', 'repair', 'wash', 'glass', 'lamp', 'supplies', 'parking', 'insurance', 'other', 'oil_filter', 'ac_filter', 'wiper_rubber'].includes(recordType)" class="form-group">
           <label>走行距離（オプション）</label>
           <input v-model.number="form.mileage" type="number" placeholder="km">
         </div>
