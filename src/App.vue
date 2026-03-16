@@ -2,6 +2,7 @@
   <div id="app" class="app">
     <Home
       v-if="currentPage === 'home'"
+      :key="`home-${homeRefreshKey}`"
       :initial-edit-record="pendingEditRecord"
       @consume-initial-edit="pendingEditRecord = null"
       @open-stats="showStatistics"
@@ -53,7 +54,8 @@ export default {
       },
       historyRecords: [],
       pendingEditRecord: null,
-      settingsPayload: {}
+      settingsPayload: {},
+      homeRefreshKey: 0
     }
   },
   methods: {
@@ -80,6 +82,8 @@ export default {
     },
     async refreshHomeAfterSettings() {
       this.settingsPayload = await settingsStore.get()
+      this.homeRefreshKey += 1
+      this.currentPage = 'home'
     }
   }
 }

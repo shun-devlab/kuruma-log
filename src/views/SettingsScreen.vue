@@ -41,6 +41,33 @@
         </div>
       </section>
 
+      <section class="panel preview-panel">
+        <h2>保存プレビュー</h2>
+        <div class="preview-grid">
+          <div>
+            <span class="preview-label">車名</span>
+            <strong>{{ form.car_name || '未設定' }}</strong>
+          </div>
+          <div>
+            <span class="preview-label">現在走行距離</span>
+            <strong>{{ Number(form.current_mileage || 0).toLocaleString('ja-JP') }}km</strong>
+          </div>
+          <div>
+            <span class="preview-label">オイル交換</span>
+            <strong>{{ form.oil_change_km }}km / {{ form.oil_change_months }}か月</strong>
+          </div>
+          <div>
+            <span class="preview-label">タイヤ交換</span>
+            <strong>{{ Number(form.tire_change_km || 0).toLocaleString('ja-JP') }}km</strong>
+          </div>
+          <div>
+            <span class="preview-label">洗車リマインド</span>
+            <strong>{{ form.wash_interval_days }}日ごと</strong>
+          </div>
+        </div>
+        <button class="btn-secondary" @click="resetDefaults">初期値に戻す</button>
+      </section>
+
       <section class="panel">
         <h2>データ管理</h2>
         <div class="data-actions">
@@ -65,6 +92,16 @@
 <script>
 import { maintenanceStore, settingsStore } from '../stores/db'
 
+const DEFAULT_SETTINGS = {
+  car_name: '私の車',
+  current_mileage: 0,
+  oil_change_km: 5000,
+  oil_change_months: 6,
+  fuel_alert_threshold: 25,
+  tire_change_km: 50000,
+  wash_interval_days: 30
+}
+
 export default {
   props: {
     settings: {
@@ -76,26 +113,21 @@ export default {
   data() {
     return {
       form: {
-        car_name: '私の車',
-        current_mileage: 0,
-        oil_change_km: 5000,
-        oil_change_months: 6,
-        fuel_alert_threshold: 25,
-        tire_change_km: 50000,
-        wash_interval_days: 30
+        ...DEFAULT_SETTINGS
       },
       message: ''
     }
   },
   mounted() {
     this.form = {
-      car_name: this.settings.car_name || '私の車',
+      ...DEFAULT_SETTINGS,
+      ...this.settings,
       current_mileage: Number(this.settings.current_mileage) || 0,
-      oil_change_km: Number(this.settings.oil_change_km) || 5000,
-      oil_change_months: Number(this.settings.oil_change_months) || 6,
-      fuel_alert_threshold: Number(this.settings.fuel_alert_threshold) || 25,
-      tire_change_km: Number(this.settings.tire_change_km) || 50000,
-      wash_interval_days: Number(this.settings.wash_interval_days) || 30
+      oil_change_km: Number(this.settings.oil_change_km) || DEFAULT_SETTINGS.oil_change_km,
+      oil_change_months: Number(this.settings.oil_change_months) || DEFAULT_SETTINGS.oil_change_months,
+      fuel_alert_threshold: Number(this.settings.fuel_alert_threshold) || DEFAULT_SETTINGS.fuel_alert_threshold,
+      tire_change_km: Number(this.settings.tire_change_km) || DEFAULT_SETTINGS.tire_change_km,
+      wash_interval_days: Number(this.settings.wash_interval_days) || DEFAULT_SETTINGS.wash_interval_days
     }
   },
   methods: {
@@ -144,6 +176,12 @@ export default {
       } finally {
         if (this.$refs.fileInput) this.$refs.fileInput.value = ''
       }
+    },
+    resetDefaults() {
+      this.form = {
+        ...DEFAULT_SETTINGS
+      }
+      this.message = '初期値をフォームに反映しました。保存すると適用されます。'
     }
   }
 }
@@ -196,6 +234,23 @@ export default {
 }
 .panel h2 {
   margin-bottom: 12px;
+}
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+.preview-grid > div {
+  background: #f8f8f8;
+  border-radius: 12px;
+  padding: 12px;
+}
+.preview-label {
+  display: block;
+  font-size: 12px;
+  color: #666666;
+  margin-bottom: 6px;
 }
 .form-grid {
   display: grid;
@@ -252,7 +307,8 @@ input {
   font-weight: 600;
 }
 @media (max-width: 640px) {
-  .form-grid {
+  .form-grid,
+  .preview-grid {
     grid-template-columns: 1fr;
   }
   .data-actions,
