@@ -10,8 +10,7 @@
 
 
     <div class="timeline">
-      <div class="timeline-header-row">
-        <h2>【タイムライン】</h2>
+      <div class="timeline-header-row timeline-header-compact">
         <button class="timeline-period-button" @click="openWeekPicker">
           <span>{{ currentTimelineWeekLabel }}</span>
           <span class="toggle-icon">▾</span>
@@ -430,6 +429,12 @@ export default {
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
+}
+
+.timeline-header-compact {
+  justify-content: flex-end;
+  gap: 0;
+  margin-bottom: 10px;
 }
 
 .timeline h2 {
