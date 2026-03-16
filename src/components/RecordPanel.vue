@@ -40,6 +40,7 @@
 
         <!-- ボタン -->
         <div class="form-actions">
+          <button v-if="initialRecord" type="button" @click="requestDelete" class="btn-danger">削除</button>
           <button type="submit" class="btn-primary">{{ initialRecord ? '更新' : '保存' }}</button>
           <button type="button" @click="$emit('close')" class="btn-secondary">キャンセル</button>
         </div>
@@ -70,7 +71,7 @@ export default {
       default: null
     }
   },
-  emits: ['save', 'close'],
+  emits: ['save', 'delete', 'close'],
   data() {
     return {
       form: {
@@ -101,6 +102,11 @@ export default {
   methods: {
     submit() {
       this.$emit('save', { ...this.form, type: this.recordType })
+    },
+    requestDelete() {
+      const confirmed = window.confirm(`${this.getLabel(this.recordType)}の記録を削除します。よろしいですか？`)
+      if (!confirmed) return
+      this.$emit('delete')
     },
     getTodayDate() {
       const date = new Date()
@@ -216,7 +222,8 @@ export default {
 }
 
 .btn-primary,
-.btn-secondary {
+.btn-secondary,
+.btn-danger {
   flex: 1;
   padding: 12px 24px;
   border-radius: 8px;
@@ -243,5 +250,20 @@ export default {
 
 .btn-secondary:hover {
   background: #EEEEEE;
+}
+
+.btn-danger {
+  background: #FDECEC;
+  color: #E74C3C;
+}
+
+.btn-danger:hover {
+  background: #FADBD8;
+}
+
+@media (max-width: 480px) {
+  .form-actions {
+    flex-direction: column;
+  }
 }
 </style>

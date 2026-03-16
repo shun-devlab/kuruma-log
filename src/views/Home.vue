@@ -25,7 +25,7 @@
       <div v-if="records.length === 0" class="empty-state">
         記録がありません。最初の記録を作成しましょう！
       </div>
-      <div v-for="record in records" :key="record.id" class="timeline-item">
+      <div v-for="record in records" :key="record.id" class="timeline-item" @click="editRecord(record.id)">
         <div class="item-date">{{ formatDate(record.date) }}</div>
         <div class="item-content">
           <span class="icon">{{ getIcon(record.type) }}</span>
@@ -35,10 +35,7 @@
             <div v-if="record.amount" class="info">金額: {{ formatCurrency(record.amount) }}</div>
             <div v-if="record.memo" class="info memo">{{ record.memo }}</div>
           </div>
-          <div class="item-actions">
-            <button @click="editRecord(record.id)" class="btn-edit">編集</button>
-            <button @click="deleteRecord(record.id)" class="btn-delete">削除</button>
-          </div>
+          <div class="item-chevron">›</div>
         </div>
       </div>
     </div>
@@ -76,6 +73,7 @@
       :suggested-mileage="suggestedMileage"
       :initial-record="selectedRecord"
       @save="saveRecord"
+      @delete="deleteCurrentRecord"
       @close="closeRecordPanel"
     />
   </div>
@@ -198,6 +196,11 @@ export default {
 
       await maintenanceStore.delete(id)
       await this.loadRecords()
+    },
+    async deleteCurrentRecord() {
+      if (!this.selectedRecord?.id) return
+      await this.deleteRecord(this.selectedRecord.id)
+      this.closeRecordPanel()
     },
     selectRecord(type) {
       this.selectedRecord = null
@@ -349,7 +352,25 @@ export default {
 .timeline-item {
   margin-bottom: 16px;
   border-bottom: 1px solid #eeeeee;
-  padding-bottom: 12px;
+  padding: 10px 8px 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-left: -8px;
+  margin-right: -8px;
+}
+
+.timeline-item:hover {
+  background: #fafafa;
+}
+
+.timeline-item:active {
+  background: #f5f5f5;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+  border-bottom: none;
 }
 
 .item-date {
@@ -389,13 +410,11 @@ export default {
   white-space: pre-wrap;
 }
 
-.btn-edit {
-  font-size: 12px;
-  color: #4a90e2;
-  background: none;
-  border: none;
-  cursor: pointer;
-  margin-top: 4px;
+.item-chevron {
+  font-size: 24px;
+  color: #c3c3c3;
+  line-height: 1;
+  padding-top: 2px;
 }
 
 .monthly-expense {
