@@ -77,7 +77,7 @@ export default {
       form: {
         type: this.recordType,
         date: this.getTodayDate(),
-        mileage: this.suggestedMileage,
+        mileage: null,
         liters: null,
         amount: null,
         memo: ''
@@ -94,7 +94,7 @@ export default {
       this.form = {
         type: this.initialRecord.type,
         date: this.initialRecord.date || this.getTodayDate(),
-        mileage: this.initialRecord.mileage ?? this.suggestedMileage,
+        mileage: this.initialRecord.mileage ?? null,
         liters: this.initialRecord.liters ?? null,
         amount: this.initialRecord.amount ?? null,
         memo: this.initialRecord.memo ?? ''
