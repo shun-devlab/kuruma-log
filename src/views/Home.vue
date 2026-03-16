@@ -36,8 +36,17 @@
           </option>
         </select>
       </div>
-      <div v-if="filteredTimelineRecords.length === 0" class="empty-state">
-        条件に合う記録がありません。
+      <div class="timeline-week-nav">
+        <button class="week-nav-btn" @click="moveTimelineWeek(-1)">‹ 前週</button>
+        <button class="week-nav-btn current" @click="selectedTimelineWeek = 'current'">今週</button>
+        <button class="week-nav-btn" @click="moveTimelineWeek(1)">次週 ›</button>
+      </div>
+      <div v-if="filteredTimelineRecords.length === 0" class="empty-state timeline-empty-state">
+        <div>この週に記録がありません。</div>
+        <div class="empty-actions">
+          <button class="btn-link" @click="moveTimelineWeek(-1)">前週を見る</button>
+          <button v-if="latestRecord" class="btn-link" @click="jumpToLatestWeek">最新の記録へ</button>
+        </div>
       </div>
       <div v-for="record in filteredTimelineRecords" :key="record.id" class="timeline-item" @click="editRecord(record.id)">
         <div class="item-date">{{ formatDate(record.date) }}</div>
@@ -179,6 +188,9 @@ export default {
       end.setDate(end.getDate() + 6)
       const endKey = this.toDateKey(end)
       return this.records.filter((record) => record.date >= startKey && record.date <= endKey)
+    },
+    latestRecord() {
+      return this.records[0] || null
     }
   },
   watch: {
@@ -296,6 +308,20 @@ export default {
       const month = String(date.getMonth() + 1).padStart(2, '0')
       const day = String(date.getDate()).padStart(2, '0')
       return `${year}-${month}-${day}`
+    },
+    moveTimelineWeek(direction) {
+      const base = this.selectedTimelineWeek === 'all'
+        ? (this.latestRecord ? new Date(`${this.latestRecord.date}T00:00:00`) : new Date())
+        : (this.selectedTimelineWeek === 'current'
+          ? new Date()
+          : new Date(`${this.selectedTimelineWeek}T00:00:00`))
+      const start = this.getWeekStart(base)
+      start.setDate(start.getDate() + direction * 7)
+      this.selectedTimelineWeek = this.toDateKey(start)
+    },
+    jumpToLatestWeek() {
+      if (!this.latestRecord) return
+      this.selectedTimelineWeek = this.toDateKey(this.getWeekStart(new Date(`${this.latestRecord.date}T00:00:00`)))
     },
     getFuelEfficiency(record) {
       const mileage = Number(record?.mileage) || 0
@@ -443,6 +469,38 @@ export default {
 .timeline-date-select:focus {
   outline: none;
   border-color: #ff9500;
+}
+
+.timeline-week-nav {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.week-nav-btn {
+  border: none;
+  background: #f2f2f2;
+  color: #333333;
+  border-radius: 999px;
+  padding: 8px 12px;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.week-nav-btn.current {
+  background: #fff3e0;
+  color: #ff9500;
+}
+
+.timeline-empty-state {
+  text-align: left;
+}
+
+.empty-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }
 
 .empty-state {
@@ -679,6 +737,14 @@ export default {
   .timeline-date-select {
     max-width: none;
     width: 100%;
+  }
+
+  .timeline-week-nav {
+    flex-wrap: wrap;
+  }
+
+  .week-nav-btn {
+    flex: 1;
   }
 
   .timeline-item {
