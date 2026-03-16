@@ -609,11 +609,11 @@ export default {
 }
 
 .record-panel-section {
-  position: sticky;
-  bottom: 0;
+  position: static;
   background: #f5f5f5;
   border-top: 1px solid #dddddd;
   padding: 12px 0 16px;
+  margin-bottom: 12px;
 }
 
 .record-strip-label {
