@@ -158,11 +158,11 @@ export default {
         const start = this.getWeekStart(date)
         const end = new Date(start)
         end.setDate(start.getDate() + 6)
-        const value = start.toISOString().split('T')[0]
+        const value = this.toDateKey(start)
         if (!seen.has(value)) {
           seen.set(value, {
             value,
-            label: `${this.formatDate(value)} 〜 ${this.formatDate(end.toISOString().split('T')[0])}`
+            label: `${this.formatDate(value)} 〜 ${this.formatDate(this.toDateKey(end))}`
           })
         }
       })
@@ -173,13 +173,11 @@ export default {
       const baseDate = this.selectedTimelineWeek === 'current'
         ? this.getWeekStart(new Date())
         : new Date(`${this.selectedTimelineWeek}T00:00:00`)
-      const start = this.getWeekStart(baseDate)
-      const end = new Date(start)
-      end.setDate(start.getDate() + 6)
-      return this.records.filter((record) => {
-        const date = new Date(`${record.date}T00:00:00`)
-        return date >= start && date <= end
-      })
+      const startKey = this.toDateKey(this.getWeekStart(baseDate))
+      const end = this.getWeekStart(baseDate)
+      end.setDate(end.getDate() + 6)
+      const endKey = this.toDateKey(end)
+      return this.records.filter((record) => record.date >= startKey && record.date <= endKey)
     }
   },
   watch: {
@@ -291,6 +289,12 @@ export default {
       target.setDate(target.getDate() + diff)
       target.setHours(0, 0, 0, 0)
       return target
+    },
+    toDateKey(date) {
+      const year = date.getFullYear()
+      const month = String(date.getMonth() + 1).padStart(2, '0')
+      const day = String(date.getDate()).padStart(2, '0')
+      return `${year}-${month}-${day}`
     },
     getFuelEfficiency(record) {
       const mileage = Number(record?.mileage) || 0
