@@ -15,9 +15,8 @@
 
         <!-- 走行距離（ガソリン / 総走行距離更新のみ必須） -->
         <div v-if="['gasoline', 'odometer'].includes(recordType)" class="form-group">
-          <label>走行距離 *</label>
+          <label>{{ recordType === 'gasoline' ? '走行距離 *' : '総走行距離 *' }}</label>
           <input v-model.number="form.mileage" type="number" placeholder="km" required>
-          <small>現在の値: {{ suggestedMileage }}km</small>
         </div>
 
 

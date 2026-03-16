@@ -19,10 +19,6 @@
             <input v-model.trim="form.car_name" type="text" placeholder="例: フィット" />
           </label>
           <label>
-            現在走行距離
-            <input v-model.number="form.current_mileage" type="number" min="0" />
-          </label>
-          <label>
             オイル交換目安(km)
             <input v-model.number="form.oil_change_km" type="number" min="0" step="500" />
           </label>
@@ -47,10 +43,6 @@
           <div>
             <span class="preview-label">車名</span>
             <strong>{{ form.car_name || '未設定' }}</strong>
-          </div>
-          <div>
-            <span class="preview-label">現在走行距離</span>
-            <strong>{{ Number(form.current_mileage || 0).toLocaleString('ja-JP') }}km</strong>
           </div>
           <div>
             <span class="preview-label">オイル交換</span>
