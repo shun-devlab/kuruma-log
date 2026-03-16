@@ -21,11 +21,19 @@
     </div>
 
     <div class="timeline">
-      <h2>【タイムライン】</h2>
-      <div v-if="records.length === 0" class="empty-state">
-        記録がありません。最初の記録を作成しましょう！
+      <div class="timeline-header-row">
+        <h2>【タイムライン】</h2>
+        <select v-model="selectedTimelineDate" class="timeline-date-select">
+          <option value="all">すべての日付</option>
+          <option v-for="date in timelineDateOptions" :key="date" :value="date">
+            {{ formatDate(date) }}
+          </option>
+        </select>
       </div>
-      <div v-for="record in records" :key="record.id" class="timeline-item" @click="editRecord(record.id)">
+      <div v-if="filteredTimelineRecords.length === 0" class="empty-state">
+        条件に合う記録がありません。
+      </div>
+      <div v-for="record in filteredTimelineRecords" :key="record.id" class="timeline-item" @click="editRecord(record.id)">
         <div class="item-date">{{ formatDate(record.date) }}</div>
         <div class="item-content">
           <span class="icon">{{ getIcon(record.type) }}</span>
@@ -104,7 +112,8 @@ export default {
       selectedRecordType: null,
       selectedRecord: null,
       upcomingMaintenance: [],
-      currentMileage: 0
+      currentMileage: 0,
+      selectedTimelineDate: 'all'
     }
   },
   computed: {
@@ -133,6 +142,13 @@ export default {
     },
     recordTypes() {
       return RECORD_TYPES
+    },
+    timelineDateOptions() {
+      return [...new Set(this.records.map((record) => record.date))].sort().reverse()
+    },
+    filteredTimelineRecords() {
+      if (this.selectedTimelineDate === 'all') return this.records
+      return this.records.filter((record) => record.date === this.selectedTimelineDate)
     }
   },
   watch: {
@@ -336,11 +352,33 @@ export default {
   overflow-y: auto;
 }
 
+.timeline-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
 .timeline h2 {
   font-size: 16px;
   font-weight: bold;
-  margin-bottom: 12px;
   color: #333333;
+}
+
+.timeline-date-select {
+  border: 1px solid #dddddd;
+  border-radius: 10px;
+  padding: 8px 10px;
+  background: #ffffff;
+  color: #333333;
+  font-size: 13px;
+  max-width: 180px;
+}
+
+.timeline-date-select:focus {
+  outline: none;
+  border-color: #ff9500;
 }
 
 .empty-state {
@@ -567,6 +605,16 @@ export default {
 
   .timeline {
     padding: 12px;
+  }
+
+  .timeline-header-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .timeline-date-select {
+    max-width: none;
+    width: 100%;
   }
 
   .timeline-item {
